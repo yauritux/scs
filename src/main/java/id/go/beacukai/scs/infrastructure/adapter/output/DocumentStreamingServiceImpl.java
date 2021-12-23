@@ -1,5 +1,6 @@
 package id.go.beacukai.scs.infrastructure.adapter.output;
 
+import id.go.beacukai.scs.ScsApplication;
 import id.go.beacukai.scs.domain.service.port.output.DocumentStreamingService;
 import id.go.beacukai.scs.infrastructure.adapter.output.dto.EventSerializer;
 import id.go.beacukai.scs.sharedkernel.event.BaseEvent;
@@ -7,24 +8,32 @@ import id.go.beacukai.scs.sharedkernel.event.DocumentCreatedEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.*;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Service;
 
 import java.util.Properties;
 
 @Slf4j
 @Service
+@Configuration
 public class DocumentStreamingServiceImpl implements DocumentStreamingService<BaseEvent> {
 
-    private final KafkaProducer<String, BaseEvent> producer;
+    @Value("${kafka.bootstrap.host:localhost}")
+    private String bootstrapHost;
 
-    public DocumentStreamingServiceImpl() {
-        this.producer = createProducer();
-    }
+    @Value("${kafka.bootstrap.port:9092}")
+    private String bootstrapPort;
+
+    private static KafkaProducer<String, BaseEvent> producer;
 
     @Override
-    public void publish(BaseEvent baseEvent) {
+    public void publish(String topic, BaseEvent baseEvent) {
         DocumentCreatedEvent event = (DocumentCreatedEvent) baseEvent;
-        producer.send(new ProducerRecord<>("pabean_docs", event.getData().getIdEntitas(), event), new Callback() {
+        if (producer == null) {
+            producer = createProducer();
+        }
+        producer.send(new ProducerRecord<>(topic, event.getData().getIdEntitas(), event), new Callback() {
             @Override
             public void onCompletion(RecordMetadata recordMetadata, Exception e) {
                 if (e != null) {
@@ -37,7 +46,7 @@ public class DocumentStreamingServiceImpl implements DocumentStreamingService<Ba
     private KafkaProducer<String, BaseEvent> createProducer() {
         // setup producer configs
         Properties properties = new Properties();
-        properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, String.format("%s:%s", bootstrapHost, bootstrapPort));
         properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, EventSerializer.class.getName());
 

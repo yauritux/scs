@@ -3,6 +3,7 @@ package id.go.beacukai.scs.infrastructure.api.command.handler;
 import id.go.beacukai.scs.domain.entity.DocumentLookupEntity;
 import id.go.beacukai.scs.domain.repository.DocumentLookupEntityRepository;
 import id.go.beacukai.scs.domain.service.port.output.DocumentStreamingService;
+import id.go.beacukai.scs.sharedkernel.constant.EventTopicConfig;
 import id.go.beacukai.scs.sharedkernel.event.DocumentCreatedEvent;
 import org.axonframework.config.ProcessingGroup;
 import org.axonframework.eventhandling.EventHandler;
@@ -30,6 +31,6 @@ public class DocumentEventHandler {
                         .idEntitas(event.getData().getIdEntitas())
                         .idPerusahaan(event.getData().getIdPerusahaan())
                         .build());
-        streamingService.publish(event);
+        streamingService.publish(EventTopicConfig.DOCUMENT_CREATED_EVENT, event);
     }
 }
