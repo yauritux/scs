@@ -1,0 +1,63 @@
+version: '3.1'
+
+services:
+
+  scs_writedb:
+    image: postgres:11
+    container_name: scs_writedb
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=Default123
+      - POSTGRES_DB=scs_writedb
+    ports:
+      - 5432:5432
+    volumes:
+      - scs_write_data:/var/lib/postgresql/data
+    networks:
+      - beacukaiNet
+
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./scs-command/src/main/resources/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - beacukaiNet
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    networks:
+      - beacukaiNet
+
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: v3r44pr1
+    networks:
+      - beacukaiNet
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 9091:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: v3r44pr1
+      ME_CONFIG_MONGODB_URL: mongodb://root:v3r44pr1@mongo:27017/
+    networks:
+      - beacukaiNet
+
+volumes:
+  scs_write_data:
+
+networks:
+  beacukaiNet:
+    driver: bridge

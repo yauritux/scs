@@ -31,6 +31,6 @@ public class DocumentEventHandler {
                         .idEntitas(event.getData().getIdEntitas())
                         .idPerusahaan(event.getData().getIdPerusahaan())
                         .build());
-        streamingService.publish(EventTopicConfig.DOCUMENT_CREATED_EVENT, event);
+        streamingService.publish(EventTopicConfig.DOCUMENT_EVENTS, event);
     }
 }

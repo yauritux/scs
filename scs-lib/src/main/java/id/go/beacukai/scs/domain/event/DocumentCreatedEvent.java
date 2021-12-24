@@ -16,6 +16,7 @@ public class DocumentCreatedEvent extends ScsBaseEvent {
     }
 
     @Getter
+    @NoArgsConstructor
     public final class Payload {
         private String nomorAju;
         private String kodeDokumen;
