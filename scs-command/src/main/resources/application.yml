@@ -32,6 +32,9 @@ axon:
     general: xstream
     messages: jackson
     events: jackson
+  metrics:
+    micrometer:
+      dimensional: true
 
 management:
   endpoint:
