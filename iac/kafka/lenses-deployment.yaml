@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lenses
+spec:
+  selector:
+    matchLabels:
+      app: lenses
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: lenses
+    spec:
+      containers:
+        - name: lenses
+          image: lensesio/box
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: 3030
+              hostPort: 3030
+              name: lensesbox
+            - containerPort: 9092
+              hostPort: 9092
+              name: kafkabroker
+          env:
+            - name: ADV_HOST
+              value: "127.0.0.1"
+            - name: EULA
+              value: "<get your own license from lenses.io>"
