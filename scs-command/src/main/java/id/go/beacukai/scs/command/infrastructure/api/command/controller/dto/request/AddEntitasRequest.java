@@ -5,13 +5,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @NoArgsConstructor
 @Getter
 @Builder
-public class UpdateEntitasRequest extends BaseDocumentRequest {
-    private List<Entitas> entities;
+public class AddEntitasRequest extends BaseDocumentRequest {
+//    private List<Entitas> entities;
 }
 
 // e.g. request :

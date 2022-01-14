@@ -25,6 +25,6 @@ spec:
               name: kafkabroker
           env:
             - name: ADV_HOST
-              value: "127.0.0.1"
+              value: "localhost"
             - name: EULA
-              value: "<get your own license from lenses.io>"
+              value: "https://licenses.lenses.io/download/lensesdl?id=7ff3ce9f-631b-11ec-9ed6-42010af01003"

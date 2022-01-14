@@ -9,6 +9,9 @@ spec:
     - name: lenses
       port: 3030
       protocol: TCP
+    - name: lenses-broker
+      port: 9092
+      protocol: TCP
   selector:
     app: lenses
   type: LoadBalancer

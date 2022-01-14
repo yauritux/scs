@@ -1,7 +1,9 @@
 package id.go.beacukai.scs.command.domain.aggregate;
 
 import id.go.beacukai.scs.command.domain.port.input.dto.CreateNewDocument;
+import id.go.beacukai.scs.command.domain.port.input.dto.UpdateDocumentHeader;
 import id.go.beacukai.scs.domain.event.DocumentCreatedEvent;
+import id.go.beacukai.scs.domain.event.DocumentHeaderUpdatedEvent;
 import lombok.NoArgsConstructor;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
@@ -19,8 +21,8 @@ public class DocumentAggregate {
     private String kodeDokumen;
     private String roleEntitas;
     private String idEntitas;
-    private String idPerusahaan;
     private String asalData;
+    private String idPerusahaan;
 
     @CommandHandler
     public DocumentAggregate(CreateNewDocument command) {
@@ -35,6 +37,19 @@ public class DocumentAggregate {
         AggregateLifecycle.apply(event);
     }
 
+    @CommandHandler
+    public void on(UpdateDocumentHeader command) {
+        var event = new DocumentHeaderUpdatedEvent(UUID.randomUUID().toString());
+        DocumentHeaderUpdatedEvent.Payload data = event.new Payload(command.getNomorAju());
+        data.setKodeCaraBayar(command.getKodeCaraBayar());
+        data.setKodeJenisImpor(command.getKodeJenisImpor());
+        data.setKodeJenisProsedur(command.getKodeJenisProsedur());
+        data.setKodeKantor(command.getKodeKantor());
+        data.setKodePelTujuan(command.getKodePelTujuan());
+        event.setData(data);
+        AggregateLifecycle.apply(event);
+    }
+
     @EventSourcingHandler
     public void on(DocumentCreatedEvent event) {
         this.nomorAju = event.getData().getNomorAju();
@@ -43,5 +58,10 @@ public class DocumentAggregate {
         this.idEntitas = event.getData().getIdEntitas();
         this.idPerusahaan = event.getData().getIdPerusahaan();
         this.asalData = event.getData().getAsalData();
+    }
+
+    @EventSourcingHandler
+    public void on(DocumentHeaderUpdatedEvent event) {
+        this.nomorAju = event.getData().getNomorAju();
     }
 }

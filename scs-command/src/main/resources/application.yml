@@ -3,7 +3,8 @@ server:
 
 kafka:
   bootstrap:
-    host: "${BOOTSTRAP_HOST:10.100.225.40}"
+#    host: "${BOOTSTRAP_HOST:pkc-l9wvm.ap-southeast-1.aws.confluent.cloud}"
+    host: "${BOOTSTRAP_HOST:localhost}"
     port: "${BOOTSTRAP_PORT:9092}"
 
 spring:
@@ -13,7 +14,7 @@ spring:
     name: "scs-command"
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: "jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_WRITER_DBNAME:scs_writedb}"
+    url: "jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/scswdb"
     username: "${POSTGRES_USER:postgres}"
     password: "${POSTGRES_PASSWORD:Default123}"
   jpa:

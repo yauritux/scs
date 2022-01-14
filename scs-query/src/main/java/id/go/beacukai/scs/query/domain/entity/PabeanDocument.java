@@ -1,5 +1,6 @@
 package id.go.beacukai.scs.query.domain.entity;
 
+import id.go.beacukai.scs.query.domain.vo.DocumentHeader;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -21,6 +22,7 @@ public class PabeanDocument {
     private String roleEntitas;
     private String idEntitas;
     private String idPerusahaan;
+    private DocumentHeader header;
     private String asalData;
     private String userPortal;
     private LocalDateTime createdAt;

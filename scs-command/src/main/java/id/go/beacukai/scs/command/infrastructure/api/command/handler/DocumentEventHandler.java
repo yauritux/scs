@@ -4,6 +4,7 @@ import id.go.beacukai.scs.command.domain.entity.DocumentLookupEntity;
 import id.go.beacukai.scs.command.domain.port.output.DocumentStreamingService;
 import id.go.beacukai.scs.command.domain.repository.DocumentLookupEntityRepository;
 import id.go.beacukai.scs.domain.event.DocumentCreatedEvent;
+import id.go.beacukai.scs.domain.event.DocumentHeaderUpdatedEvent;
 import id.go.beacukai.scs.sharedkernel.constant.EventTopicConfig;
 import org.axonframework.config.ProcessingGroup;
 import org.axonframework.eventhandling.EventHandler;
@@ -31,6 +32,11 @@ public class DocumentEventHandler {
                         .idEntitas(event.getData().getIdEntitas())
                         .idPerusahaan(event.getData().getIdPerusahaan())
                         .build());
+        streamingService.publish(EventTopicConfig.DOCUMENT_EVENTS, event);
+    }
+
+    @EventHandler
+    public void on(DocumentHeaderUpdatedEvent event) {
         streamingService.publish(EventTopicConfig.DOCUMENT_EVENTS, event);
     }
 }

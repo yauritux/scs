@@ -1,6 +1,7 @@
 package id.go.beacukai.scs.command.infrastructure.api.command.interceptor;
 
 import id.go.beacukai.scs.command.domain.port.input.dto.CreateNewDocument;
+import id.go.beacukai.scs.command.domain.port.input.dto.UpdateDocumentHeader;
 import id.go.beacukai.scs.command.domain.repository.DocumentLookupEntityRepository;
 import org.axonframework.commandhandling.CommandExecutionException;
 import org.axonframework.commandhandling.CommandMessage;
@@ -34,6 +35,14 @@ public class DocumentCreationDispatchInterceptor implements MessageDispatchInter
                 if(documentLookupEntityRepository.existsById(createNewDocumentCommand.getNomorAju())) {
                     throw new CommandExecutionException(String.format("Nomor pengajuan %s telah terdaftar!",
                             createNewDocumentCommand.getNomorAju()), null);
+                }
+            }
+            if(UpdateDocumentHeader.class.equals(m.getPayloadType())) {
+                final UpdateDocumentHeader updateDocumentHeaderCommand = (UpdateDocumentHeader) m.getPayload();
+
+                if(!documentLookupEntityRepository.existsById(updateDocumentHeaderCommand.getNomorAju())) {
+                    throw new CommandExecutionException(String.format("Nomor pengajuan %s tidak ditemukan!",
+                            updateDocumentHeaderCommand.getNomorAju()), null);
                 }
             }
             return m;

@@ -1,20 +1,15 @@
-package id.go.beacukai.scs.command.domain.entity;
+package id.go.beacukai.scs.command.domain.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@Entity
-public class EntitasLookupEntity {
-    @Id
+public class Entitas {
     private String idEntitas;
     private String nomorAju; // TODO:: considering to replace with IDHeader
     private String alamatEntitas; // e.g. JL. TURANGGA BRT DLM V

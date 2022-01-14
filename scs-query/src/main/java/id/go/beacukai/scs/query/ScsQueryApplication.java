@@ -1,8 +1,12 @@
 package id.go.beacukai.scs.query;
 
 import id.go.beacukai.scs.domain.event.DocumentCreatedEvent;
+import id.go.beacukai.scs.domain.event.DocumentHeaderUpdatedEvent;
+import id.go.beacukai.scs.domain.event.ScsBaseEvent;
 import id.go.beacukai.scs.query.domain.entity.PabeanDocument;
 import id.go.beacukai.scs.query.domain.repository.PabeanDocumentRepository;
+import id.go.beacukai.scs.query.domain.vo.DocumentHeader;
+import id.go.beacukai.scs.query.infrastructure.adapter.input.dto.EventDeserializer;
 import id.go.beacukai.scs.sharedkernel.constant.EventTopicConfig;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -19,7 +23,6 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
-import org.springframework.kafka.support.serializer.JsonDeserializer;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -45,19 +48,19 @@ public class ScsQueryApplication {
     }
 
     @Bean
-    public ConsumerFactory<String, DocumentCreatedEvent> consumerFactory() {
+    public ConsumerFactory<String, ScsBaseEvent> consumerFactory() {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
         return new DefaultKafkaConsumerFactory<>(
                 props,
                 new StringDeserializer(),
-                new JsonDeserializer<>(DocumentCreatedEvent.class));
+                  new EventDeserializer());
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, DocumentCreatedEvent> kafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, DocumentCreatedEvent> factory =
+    public ConcurrentKafkaListenerContainerFactory<String, ScsBaseEvent> kafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, ScsBaseEvent> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
         return factory;
@@ -77,26 +80,44 @@ public class ScsQueryApplication {
         private PabeanDocumentRepository documentRepository;
 
         @KafkaListener(topics = EventTopicConfig.DOCUMENT_EVENTS, containerFactory = "kafkaListenerContainerFactory")
-        public void eventListener(DocumentCreatedEvent event) {
+        public void eventListener(ScsBaseEvent event) {
             // TODO:: extract interface to adhere SoC
-            LOG.info("Received event = {}", event);
-            Optional<PabeanDocument> currentDocument = documentRepository.findById(event.getData().getNomorAju());
-            // TODO:: consider to apply state pattern
-            PabeanDocument newDocument = null;
-            if (currentDocument.isEmpty()) {
-                newDocument = PabeanDocument.builder()
-                        .nomorAju(event.getData().getNomorAju())
-                        .kodeDokumen(event.getData().getKodeDokumen())
-                        .roleEntitas(event.getData().getRoleEntitas())
-                        .idEntitas(event.getData().getIdEntitas())
-                        .idPerusahaan(event.getData().getIdPerusahaan())
-                        .asalData(event.getData().getAsalData())
-                        .userPortal(event.getData().getUserPortal())
-                        .createdAt(LocalDateTime.now()).build();
-                documentRepository.save(newDocument);
-            } else {
-                // data already exist, skip (i.e. document update should belong to another kind of document event
-                LOG.info("Document with 'nomor aju' {} already exist. Skip the event.", event.getData().getNomorAju());
+            if (event instanceof DocumentCreatedEvent) {
+                var docCreatedEvent = (DocumentCreatedEvent) event;
+                Optional<PabeanDocument> currentDocument = documentRepository.findById(docCreatedEvent.getData().getNomorAju());
+                if (currentDocument.isEmpty()) {
+                    PabeanDocument newDocument = PabeanDocument.builder()
+                            .nomorAju(docCreatedEvent.getData().getNomorAju())
+                            .kodeDokumen(docCreatedEvent.getData().getKodeDokumen())
+                            .roleEntitas(docCreatedEvent.getData().getRoleEntitas())
+                            .idEntitas(docCreatedEvent.getData().getIdEntitas())
+                            .idPerusahaan(docCreatedEvent.getData().getIdPerusahaan())
+                            .asalData(docCreatedEvent.getData().getAsalData())
+                            .userPortal(docCreatedEvent.getData().getUserPortal())
+                            .createdAt(LocalDateTime.now()).build();
+                    documentRepository.save(newDocument);
+                } else {
+                    // data already exist, skip (i.e. document update should belong to another kind of document event
+                    LOG.info("Document with 'nomor aju' {} already exist. Skip the event.", docCreatedEvent.getData().getNomorAju());
+                }
+            } else if (event instanceof DocumentHeaderUpdatedEvent) {
+                var docHeaderUpdatedEvent = (DocumentHeaderUpdatedEvent) event;
+                Optional<PabeanDocument> currentDocument = documentRepository.findById(docHeaderUpdatedEvent.getData().getNomorAju());
+                if (currentDocument.isEmpty()) {
+                    // data doesn't exist, skip
+                    LOG.info("Document with 'nomor aju' {} does not exist. Skip the event.", docHeaderUpdatedEvent.getData().getNomorAju());
+                } else {
+                    PabeanDocument document = currentDocument.get();
+                    var docHeader = DocumentHeader.builder()
+                            .kodeCaraBayar(docHeaderUpdatedEvent.getData().getKodeCaraBayar())
+                            .kodeJenisImpor(docHeaderUpdatedEvent.getData().getKodeJenisImpor())
+                            .kodeKantor(docHeaderUpdatedEvent.getData().getKodeKantor())
+                            .kodePelTujuan(docHeaderUpdatedEvent.getData().getKodePelTujuan())
+                            .kodeJenisProsedur(docHeaderUpdatedEvent.getData().getKodeJenisProsedur())
+                            .build();
+                    document.setHeader(docHeader);
+                    documentRepository.save(document);
+                }
             }
             this.eventLatch.countDown();
         }

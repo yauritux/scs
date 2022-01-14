@@ -5,8 +5,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Data
-public class NewDocumentRequest {
-    private String nomorAju;
+public class NewDocumentRequest extends BaseDocumentRequest {
     private String roleEntitas;
     private String kodeDokumen;
     private String asalData;

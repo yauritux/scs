@@ -2,17 +2,17 @@ version: '3.1'
 
 services:
 
-  scs_writedb:
+  scswdb:
     image: postgres:11
-    container_name: scs_writedb
+    container_name: scswdb
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=Default123
-      - POSTGRES_DB=scs_writedb
+      - POSTGRES_DB=scswdb
     ports:
       - 5432:5432
     volumes:
-      - scs_write_data:/var/lib/postgresql/data
+      - scswdb:/var/lib/postgresql/data
     networks:
       - beacukaiNet
 
@@ -56,7 +56,7 @@ services:
       - beacukaiNet
 
 volumes:
-  scs_write_data:
+  scswdb:
 
 networks:
   beacukaiNet:

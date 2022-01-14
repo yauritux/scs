@@ -44,6 +44,11 @@ public class ScsCommandApplication {
         properties.setProperty(ProducerConfig.LINGER_MS_CONFIG, "20"); // 20ms
         properties.setProperty(ProducerConfig.BATCH_SIZE_CONFIG, Integer.toString(32*1024)); // 32 KB batch size
 
+        // confluent connection properties
+//        properties.setProperty("security.protocol", "SASL_SSL");
+//        properties.setProperty("sasl.jaas.config", "org.apache.kafka.common.security.plain.PlainLoginModule   required username='HBCCPISRDUV7KHD7'   password='hgRI6VLmGieIWr5qJDAeHOJbpYZiJEGSBMi2Qd78jH49LlONNN12fetoIlpV8kF5';");
+//        properties.setProperty("sasl.mechanism", "PLAIN");
+
         // create a producer
         KafkaProducer<String, ScsBaseEvent> producer = new KafkaProducer<>(properties);
 
