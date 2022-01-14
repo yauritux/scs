@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: scs-command
+  name: scs-command
+spec:
+  ports:
+    - name: scs-command
+      port: 8081
+      protocol: TCP
+  selector:
+    app: scs-command
+  type: LoadBalancer

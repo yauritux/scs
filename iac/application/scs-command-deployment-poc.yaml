@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scs-command
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: scs-command
+  replicas: 1
+  template:
+    metadata:
+      name: scs-command
+      labels:
+        app: scs-command
+    spec:
+      containers:
+        - name: scs-command
+          env:
+            - name: POSTGRES_USER
+              value: "postgres"
+            - name: POSTGRES_PASSWORD
+              value: "j2J9PbPl734hxhaC"
+            - name: POSTGRES_HOST
+              value: "saas-fulfillment-aurora-db.cluster-ce6zmr64ioou.ap-southeast-1.rds.amazonaws.com"
+            - name: POSTGRES_PORT
+              value: "5432"
+          image: yauritux/scs-command:latest
