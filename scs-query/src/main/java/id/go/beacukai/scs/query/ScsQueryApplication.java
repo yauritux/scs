@@ -67,13 +67,17 @@ public class ScsQueryApplication {
         return new MessageListener();
     }
 
-    // TODO:: move to an infrastructure layer
     public static class MessageListener {
 
         private CountDownLatch eventLatch = new CountDownLatch(1);
 
         @KafkaListener(topics = EventTopicConfig.DOCUMENT_EVENTS, containerFactory = "kafkaListenerContainerFactory")
         public void eventListener(ScsBaseEvent event) {
+            if (!ScsQueryApplication.EVENT_HANDLERS.containsKey(event.getEventHandler())) {
+                LOG.error("Failed to proceed event {}! Cannot find the event handler {}!!",
+                        event.getEventType(), event.getEventHandler());
+                return;
+            }
             ScsQueryApplication.EVENT_HANDLERS.get(event.getEventHandler()).handle(event);
             this.eventLatch.countDown();
         }
