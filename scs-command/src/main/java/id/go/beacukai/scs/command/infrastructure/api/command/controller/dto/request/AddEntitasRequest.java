@@ -1,15 +1,17 @@
 package id.go.beacukai.scs.command.infrastructure.api.command.controller.dto.request;
 
 import id.go.beacukai.scs.command.domain.vo.Entitas;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.util.List;
 
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
+@Setter
 @Builder
 public class AddEntitasRequest extends BaseDocumentRequest {
-//    private List<Entitas> entities;
+    private List<Entitas> entities;
 }
 
 // e.g. request :

@@ -74,6 +74,11 @@ public class DocumentCommandServiceImpl implements DocumentCommandService<Create
         }
     }
 
+//    @Override
+//    public Mono<> addEntitas(BaseDocumentRequest request) {
+//
+//    }
+
     public final synchronized String newNoAju(String kodeDokumen, String idEntitas) {
         var str = new StringBuilder();
         str.append("0".repeat(6 - kodeDokumen.length()));
