@@ -10,6 +10,6 @@ However, we're also trying to simulate a real production environment by having a
 These are all you need to have in your local machine:
 - Java 11
 - Docker
-- `Kafka` (you can have your own kafka binary, or try to get some managed services like lenses or confluent).
+- `Kafka` (you can have your own kafka binary, or try to get some managed services like [lenses](https://lenses.io/) or [confluent](https://confluent.io/)).
 - `Vagrant` (optional. Mandatory if you're looking to deploy in a K8S cluster with 1 master node and 2 worker nodes)
 - `eksctl` (optional. Mandatory if you're looking to deploy all services in a EKS cluster)
