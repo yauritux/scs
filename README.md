@@ -1,6 +1,8 @@
 # SCS
 SCS stands for Single-Core-Service, is one of the core service module being developed for BeaCukai (Customs). 
+
 This repository was built merely for POC purposes to show how the Event-Sourcing and CQRS architecture work, by showing some simple business cases in SCS. 
+
 However, we're also trying to simulate a real production environment by having all services deployed in a K8S cluster either within AWS-EKS or Baremetal (On-Prem). 
 
 ## Prerequisites
