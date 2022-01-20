@@ -13,6 +13,9 @@ target/
 .springBeans
 .sts4-cache
 
+### Vagrant ###
+**/.vagrant/**
+
 ### IntelliJ IDEA ###
 .idea
 *.iws
