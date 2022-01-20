@@ -13,3 +13,20 @@ These are all you need to have in your local machine:
 - `Kafka` (you can have your own kafka binary, or try to get some managed services like [lenses](https://lenses.io/) or [confluent](https://confluent.io/)).
 - `Vagrant` (optional. Mandatory if you're looking to deploy in a K8S cluster with 1 master node and 2 worker nodes)
 - `eksctl` (optional. Mandatory if you're looking to deploy all services in a EKS cluster)
+
+## Running in Local Machine
+
+1. `cd` into project directory.
+2. Execute `docker-compose up`.
+3. Compile all project modules.
+   ```
+   $ mvn clean install
+   ```
+5. Run the **command service** 
+   ```
+   $ cd scs-command && mvn spring-boot run
+   ```
+7. Run the **query service** 
+   ```
+   $ cd scs-query && mvn spring-boot run
+   ```
