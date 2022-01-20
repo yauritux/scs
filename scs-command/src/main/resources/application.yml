@@ -1,5 +1,5 @@
 server:
-  port: "${SCS_CMD_PORT:8081}"
+  port: "${SCS_CMD_PORT:9091}"
 
 kafka:
   bootstrap:
